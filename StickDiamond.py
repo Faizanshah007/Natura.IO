@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 import random
 import itertools
 import requests
@@ -82,7 +83,7 @@ def rotate(ele):
     line_lst.append(new_coords)
 
 
-def translate(ele, direction, val):
+def translate(ele, direction, val):    
 
     ID = control_lines[ele]
     
@@ -149,6 +150,9 @@ def operate_game_by_command(x):
 
     print(intent,colour,direction,magnitude)
 
+    if(magnitude == []):
+        magnitude = [1]
+
     if(len(intent) == 0 or len(colour) == 0 or ('translate' in intent and (len(direction)== 0 or len(magnitude) == 0))):
         num_of_ops = 0
     else:
@@ -186,13 +190,23 @@ e.pack(fill=tk.BOTH, expand=True)
 
 win_img = tk.PhotoImage(file = 'win.ppm')
 
+previous_command = ''
+
 def callback(event):
-    global root,win_img
+    global root,win_img, previous_command
     if(e.get() != ''):
         if any(wrd in (e.get().lower()).split(' ') for wrd in ['exit', 'quit', 'close']):
             root.destroy()
             sys.exit()
-        operate_game_by_command(e.get())
+        if("repeat" in e.get()):
+            if(messagebox.askyesno("Repeat", "Do you want to repeat the current instruction?")):
+                operate_game_by_command(e.get())
+                operate_game_by_command(e.get())
+            elif(messagebox.askyesno("Repeat", "Do you want to repeat the previous instruction?")):
+                operate_game_by_command(previous_command)
+        else:
+            operate_game_by_command(e.get())
+        previous_command = e.get()
 
         # Check Win
         x = set()
