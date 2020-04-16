@@ -14,9 +14,10 @@ control_lines = dict()
 w = None
 h = None
 line_lst = list()
+plot_dimension = {'width':0, 'height':0}
 
 def create_grid_and_control_lines(event=None):
-    global control_lines, w, h, line_lst
+    global control_lines, w, h, line_lst, plot_dimension
     w = c.winfo_width() # Get current width of canvas
     h = c.winfo_height() # Get current height of canvas
     #c.delete('grid_line') # Will only remove the grid_line
@@ -24,11 +25,15 @@ def create_grid_and_control_lines(event=None):
     # Creates all vertical lines at intevals of 100
     for i in range(0, w, 100):
         c.create_line([(i, 0), (i, h)], tag='grid_line')
+        plot_dimension['width'] += 1
 
     # Creates all horizontal lines at intevals of 100
     for i in range(0, h, 100):
         c.create_line([(0, i), (w, i)], tag='grid_line')
+        plot_dimension['height'] += 1
 
+    print(plot_dimension)
+    
     choices = list(itertools.product(range(0, w - 100, 100), range(0, h - 100, 100)))
     random.shuffle(choices)
 
@@ -150,7 +155,13 @@ def operate_game_by_command(x):
 
     print(intent,colour,direction,magnitude)
 
-    if(magnitude == []):
+    if(direction == [] and magnitude == []):
+        if('top' in x.lower()):
+            direction = ['up']
+        if('bottom' in x.lower()):
+            direction = ['down']
+        magnitude = [1] * (plot_dimension['height'] - 1)
+    elif(magnitude == []):
         magnitude = [1]
 
     if(len(intent) == 0 or len(colour) == 0 or ('translate' in intent and (len(direction)== 0 or len(magnitude) == 0))):
@@ -198,15 +209,18 @@ def callback(event):
         if any(wrd in (e.get().lower()).split(' ') for wrd in ['exit', 'quit', 'close']):
             root.destroy()
             sys.exit()
-        if("repeat" in e.get()):
-            if(messagebox.askyesno("Repeat", "Do you want to repeat the current instruction?")):
+        try:
+            if("repeat" in (e.get()).lower()):
+                if(messagebox.askyesno("Repeat", "Do you want to repeat the current instruction?")):
+                    operate_game_by_command(e.get())
+                    operate_game_by_command(e.get())
+                elif(messagebox.askyesno("Repeat", "Do you want to repeat the previous instruction?")):
+                    operate_game_by_command(previous_command)
+            else:
                 operate_game_by_command(e.get())
-                operate_game_by_command(e.get())
-            elif(messagebox.askyesno("Repeat", "Do you want to repeat the previous instruction?")):
-                operate_game_by_command(previous_command)
-        else:
-            operate_game_by_command(e.get())
-        previous_command = e.get()
+            previous_command = e.get()
+        except:
+            print("err ", e.get())
 
         # Check Win
         x = set()
