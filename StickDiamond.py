@@ -4,6 +4,7 @@ import random
 import itertools
 import requests
 import sys
+import string
 
 def get_rand_offset():
     offset = [100,-100]
@@ -155,6 +156,11 @@ def operate_game_by_command(x):
 
     print(intent,colour,direction,magnitude)
 
+    processed_x = x.translate(str.maketrans('', '', string.punctuation)).split()
+    
+    if(colour == [] and ('all' in processed_x or 'every' in processed_x)):
+        colour = ['red','green','blue','gold']
+
     if(direction == [] and magnitude == []):
         if('top' in x.lower()):
             direction = ['up']
@@ -193,32 +199,42 @@ root.wm_attributes('-fullscreen','true')
 c.pack(fill=tk.BOTH, expand=True)
 
 win2 = tk.Toplevel(root)
+win2.resizable(0,0)
+win2.transient(root)
+win2.title('Game Controller')
 win2.attributes("-topmost",True)
 
 win2.geometry(str(root.winfo_screenwidth()) + "x" + str(round(root.winfo_screenheight()*0.028)) + "+" + str(0) + "+" + str(round(root.winfo_screenheight()*0.938)))
-e = tk.Entry(win2)
-e.pack(fill=tk.BOTH, expand=True)
+
+e = tk.Entry(win2, font = "Helvetica 20 bold")
+e.place(relwidth=0.9, relheight=1)
+
 
 win_img = tk.PhotoImage(file = 'win.ppm')
 
-previous_command = ''
+previous_commands = list()
+
+def exit_game():
+    global root
+    root.destroy()
+    sys.exit()
 
 def callback(event):
-    global root,win_img, previous_command
+    global e,root,win_img, previous_command, listNodes
     if(e.get() != ''):
         if any(wrd in (e.get().lower()).split(' ') for wrd in ['exit', 'quit', 'close']):
-            root.destroy()
-            sys.exit()
+            exit_game()
         try:
             if("repeat" in (e.get()).lower()):
-                if(messagebox.askyesno("Repeat", "Do you want to repeat the current instruction?")):
-                    operate_game_by_command(e.get())
-                    operate_game_by_command(e.get())
-                elif(messagebox.askyesno("Repeat", "Do you want to repeat the previous instruction?")):
-                    operate_game_by_command(previous_command)
+                messagebox.showinfo("Repeat", "Your command history will pop-up, please select the command that you want to repeat.")
+                toggle_visibility()
             else:
                 operate_game_by_command(e.get())
-            previous_command = e.get()
+            if(e.get() in previous_commands):
+                previous_commands.remove(e.get())
+            previous_commands.append(e.get())
+            listNodes.delete(0, tk.END)
+            listNodes.insert(tk.END, *previous_commands)
         except:
             print("err ", e.get())
 
@@ -233,12 +249,57 @@ def callback(event):
     e.delete(0, 'end')
     
 c.bind_all('<Return>', callback)
+c.bind_all('<FocusIn>', lambda temp : e.focus())
 
-
+win2.protocol("WM_DELETE_WINDOW", exit_game)
 
 c.bind('<Configure>', create_grid_and_control_lines)
 
-##root.after(100,thread_loop)
+log = tk.Toplevel(win2)
+log.geometry(str(round(root.winfo_screenwidth() * 0.25)) + "x" + str(round(root.winfo_screenheight()*(1/3))) + "+" + str(root.winfo_screenwidth() - round(root.winfo_screenwidth() * 0.25)) + "+" + str(round(root.winfo_screenheight()*0.938) - round(root.winfo_screenheight()*(1/3))))
+log.overrideredirect(1)
+hidden = True
+
+def toggle_visibility():
+    global hidden, log, btn_text
+    if hidden:
+        log.deiconify()
+        btn_text.set('Hide Command History')
+        log.attributes("-topmost", True)
+    else:
+        log.withdraw()
+        btn_text.set('Show Command History')
+        log.attributes("-topmost", False)
+    hidden = not hidden
+
+
+btn_text = tk.StringVar()
+btn_text.set('Show Command History')
+tk.Button(win2, textvariable = btn_text, command = toggle_visibility).place(relx=0.9, relheight = 1, relwidth = 0.1)
+
+def onselect(evt):
+    global e
+    w = evt.widget
+    cmd = w.get(w.curselection()[0])
+    e.delete(0, "end")
+    e.insert(0, cmd)
+
+listNodes = tk.Listbox(log, font=("Helvetica", 12))
+listNodes.bind('<<ListboxSelect>>', onselect)
+listNodes.insert(tk.END, "test")
+listNodes.place(relheight = 0.95, relwidth = 0.96)
+
+scrollbary = tk.Scrollbar(log, orient="vertical")
+scrollbary.config(command=listNodes.yview)
+scrollbary.place(relx = 0.96, relheight = 1)
+
+scrollbarx = tk.Scrollbar(log, orient="horizontal")
+scrollbarx.config(command=listNodes.xview)
+scrollbarx.place(rely = 0.95, relwidth = 1)
+
+listNodes.config(yscrollcommand=scrollbary.set)
+listNodes.config(xscrollcommand=scrollbarx.set)
+
 
 '''c.bind('<Button-1>', lambda event, ele = "red_line":
        rotate(ele))
