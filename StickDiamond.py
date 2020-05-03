@@ -6,6 +6,12 @@ import requests
 import sys
 import string
 
+import threading
+import Speech_to_Text
+
+
+subscription_key = "" # Enter azure key # Regenerate before leaving
+
 def get_rand_offset():
     offset = [100,-100]
     random.shuffle(offset)
@@ -65,7 +71,7 @@ def create_grid_and_control_lines(event=None):
 
 
 def rotate(ele):
-    print("hi")
+    #print("hi")
     ID = control_lines[ele]
 
     x1,y1,x2,y2 = c.coords(ID)
@@ -116,9 +122,10 @@ def translate(ele, direction, val):
     line_lst.append(new_coords)
 
 def operate_game_by_command(x):
+    global subscription_key
     try:
-        command = x
-        r = requests.get(f'https://centralindia.api.cognitive.microsoft.com/luis/v2.0/apps/67ec9d8b-fed1-4ded-a47d-c76f07d5ef93?staging=true&verbose=true&timezoneOffset=330&subscription-key=b95bd42248b548f5b94f34dad2bde47a&q=' + command)
+        command = str(x).replace('&','and').replace(' a ',' 1 ')
+        r = requests.get(f'https://centralindia.api.cognitive.microsoft.com/luis/v2.0/apps/67ec9d8b-fed1-4ded-a47d-c76f07d5ef93?verbose=true&timezoneOffset=330&subscription-key=' + subscription_key + '&q=' + command)
         result = r.json()
         print(result)
     except Exception as e:
@@ -127,20 +134,23 @@ def operate_game_by_command(x):
 
     intent = list()
 
-    temp = (requests.get(f'https://centralindia.api.cognitive.microsoft.com/luis/v2.0/apps/9add54d5-3a9a-4315-b153-daa4c53395ad?staging=true&verbose=true&timezoneOffset=330&subscription-key=b95bd42248b548f5b94f34dad2bde47a&q=' + command)).json()
+    '''temp = (requests.get(f'https://centralindia.api.cognitive.microsoft.com/luis/v2.0/apps/9add54d5-3a9a-4315-b153-daa4c53395ad?verbose=true&timezoneOffset=0&subscription-key=' + subscription_key + '&q=' + command)).json()
+    print(temp)
     flag = None
     
     if(temp['topScoringIntent']['intent'] == 'MoveAndRotate'):
-        flag = True
+        flag = True'''
     
-    for ele in result['intents']:
+    '''for ele in result['intents']:
         if(flag and (ele['intent'] == "move" or ele['intent'] == "rotate")):
             intent.append(ele['intent'])
         elif(ele['intent'] == "move" or ele['intent'] == "rotate"):
             intent.append(ele['intent'])
             break
         else:
-            break
+            break'''
+
+    intent.append(result['topScoringIntent']['intent'])
 
     colour = list()
     direction = list()
@@ -166,14 +176,28 @@ def operate_game_by_command(x):
             direction = ['up']
         if('bottom' in x.lower()):
             direction = ['down']
-        magnitude = [1] * (plot_dimension['height'] - 1)
+        if('rightmost' in x.lower()):
+            direction = ['right']
+        if('leftmost' in x.lower()):
+            direction = ['left']
+        magnitude = [1] * (plot_dimension['width'] - 1) # Since width > height & is max
+    elif('extreme' in x.lower()):
+        magnitude = [1] * (plot_dimension['width'] - 1) # Since width > height & is max
     elif(magnitude == []):
         magnitude = [1]
+    print('magnitude-',magnitude)
 
-    if(len(intent) == 0 or len(colour) == 0 or ('translate' in intent and (len(direction)== 0 or len(magnitude) == 0))):
+    if(len(intent) == 0 or len(colour) == 0 or ('move' in intent and (len(direction)== 0 or len(magnitude) == 0))):
         num_of_ops = 0
     else:
-        num_of_ops = max(len(intent), len(colour), len(direction), len(magnitude))
+        if(intent == ['move']):
+            num_of_ops = len(magnitude)
+        elif(intent == ['rotate']):
+            num_of_ops = len(colour)
+        else:
+            num_of_ops = 0
+        '''if('rotate' in intent):
+            num_of_ops += 1'''
 
     data = [intent, colour, direction, magnitude]
 
@@ -181,16 +205,17 @@ def operate_game_by_command(x):
 
         if(data[0][0] == 'move'):
             translate(data[1][0] + '_line', data[2][0], data[3][0])
-            for spec in data:
-                if(len(spec) > 1):
-                    del spec[0]
+            for j in range(1,4):
+                if(len(data[j]) > 1):
+                    del data[j][0]
+            '''if(data[3] == []):
+                del data[0][0]'''
 
         else:
             rotate(data[1][0] + '_line')
             if(len(data[1]) > 1):
                 del data[1][0]
-                
-        
+                     
 root = tk.Tk()
 
 #win1 = tk.Toplevel(root)
@@ -216,13 +241,14 @@ previous_commands = list()
 
 def exit_game():
     global root
+    Speech_to_Text.record_mic_voice.flag = 'stop'
     root.destroy()
     sys.exit()
 
 def callback(event):
     global e,root,win_img, previous_command, listNodes
     if(e.get() != ''):
-        if any(wrd in (e.get().lower()).split(' ') for wrd in ['exit', 'quit', 'close']):
+        if any(wrd in (e.get().lower().strip()).split(' ') for wrd in ['exit', 'quit', 'close']):
             exit_game()
         try:
             if("repeat" in (e.get()).lower()):
@@ -312,4 +338,40 @@ c.bind_all('<s>', lambda event, ele = "red_line", direction = "down", val = 1:
 c.bind_all('<d>', lambda event, ele = "red_line", direction = "right", val = 1:
        translate(ele, direction, val))'''
 e.focus_set()
+
+def voice_command_thread():
+    global win2, c
+    Speech_to_Text.run()
+    
+    while(Speech_to_Text.record_mic_voice.flag != 'stop'):
+        if(Speech_to_Text.record_mic_voice.flag):
+            win2.title('Speak Now')
+            c.configure(bg="grey")
+        else:
+            win2.title('Game Controller')
+            c.configure(bg="white")
+        with open('command.txt', 'r') as f:
+            data = f.readlines()
+            f.close()
+
+        while(True):
+            try:
+                with open('command.txt', 'w') as f:
+                    f.writelines(data[1:])
+                    f.close()
+                    break
+            except:
+                print("cant open command.txt")
+        
+        if(data != []):
+            print(data[0])
+            e.delete(0, "end")
+            e.insert(0, str(data[0]))
+            e.event_generate('<Return>')
+            
+            
+
+thread = threading.Thread(target = voice_command_thread)
+thread.start()
+
 root.mainloop()
