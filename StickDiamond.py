@@ -10,7 +10,7 @@ import threading
 import Speech_to_Text
 
 
-subscription_key = "" # Enter azure key # Regenerate before leaving
+subscription_key = "87f742a975d74b88a0b5ecd08a0850d4" # Enter azure key # Regenerate before leaving
 
 def get_rand_offset():
     offset = [100,-100]
@@ -191,7 +191,7 @@ def operate_game_by_command(x):
         num_of_ops = 0
     else:
         if(intent == ['move']):
-            num_of_ops = len(magnitude)
+            num_of_ops = max(len(magnitude),len(colour),len(direction))
         elif(intent == ['rotate']):
             num_of_ops = len(colour)
         else:
