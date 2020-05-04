@@ -10,7 +10,7 @@ import threading
 import Speech_to_Text
 
 
-subscription_key = "87f742a975d74b88a0b5ecd08a0850d4" # Enter azure key # Regenerate before leaving
+subscription_key = "" # Enter azure key # Regenerate before leaving
 
 def get_rand_offset():
     offset = [100,-100]
@@ -23,6 +23,8 @@ h = None
 line_lst = list()
 plot_dimension = {'width':0, 'height':0}
 
+
+
 def create_grid_and_control_lines(event=None):
     global control_lines, w, h, line_lst, plot_dimension
     w = c.winfo_width() # Get current width of canvas
@@ -32,12 +34,13 @@ def create_grid_and_control_lines(event=None):
     # Creates all vertical lines at intevals of 100
     for i in range(0, w, 100):
         c.create_line([(i, 0), (i, h)], tag='grid_line')
-        plot_dimension['width'] += 1
 
     # Creates all horizontal lines at intevals of 100
     for i in range(0, h, 100):
         c.create_line([(0, i), (w, i)], tag='grid_line')
-        plot_dimension['height'] += 1
+
+    plot_dimension['width'] = w//100
+    plot_dimension['height'] = h//100
 
     print(plot_dimension)
     
@@ -164,7 +167,7 @@ def operate_game_by_command(x):
         elif(ele['type'] == 'builtin.number'):
             magnitude.append(ele['resolution']['value'])
 
-    print(intent,colour,direction,magnitude)
+    #print(intent,colour,direction,magnitude)
 
     processed_x = x.translate(str.maketrans('', '', string.punctuation)).split()
     
@@ -180,11 +183,32 @@ def operate_game_by_command(x):
             direction = ['right']
         if('leftmost' in x.lower()):
             direction = ['left']
-        magnitude = [1] * (plot_dimension['width'] - 1) # Since width > height & is max
+        for ele in colour:
+            x1,y1,x2,y2 = c.coords(control_lines[ele + '_line'])
+            if(direction == ['up']):
+                magnitude.append(max(y1,y2)/100 - 1)
+            elif(direction == ['down']):
+                magnitude.append(plot_dimension['height'] - max(y1,y2)/100)
+            elif(direction == ['right']):
+                magnitude.append(plot_dimension['width'] - max(x1,x2)/100)
+            elif(direction == ['left']):
+                magnitude.append(max(x1,x2)/100 - 1)
+
     elif('extreme' in x.lower()):
-        magnitude = [1] * (plot_dimension['width'] - 1) # Since width > height & is max
+        for ele in colour:
+            x1,y1,x2,y2 = c.coords(control_lines[ele + '_line'])
+            if(direction == ['up']):
+                magnitude.append(max(y1,y2)/100 - 1)
+            elif(direction == ['down']):
+                magnitude.append(plot_dimension['height'] - max(y1,y2)/100)
+            elif(direction == ['right']):
+                magnitude.append(plot_dimension['width'] - max(x1,x2)/100)
+            elif(direction == ['left']):
+                magnitude.append(max(x1,x2)/100 - 1)
+        
     elif(magnitude == []):
         magnitude = [1]
+
     print('magnitude-',magnitude)
 
     if(len(intent) == 0 or len(colour) == 0 or ('move' in intent and (len(direction)== 0 or len(magnitude) == 0))):
@@ -198,14 +222,20 @@ def operate_game_by_command(x):
             num_of_ops = 0
         '''if('rotate' in intent):
             num_of_ops += 1'''
-
+        
+    print(intent,colour,direction,magnitude)
+    
     data = [intent, colour, direction, magnitude]
+
+    command_colours_num = len(colour)
 
     for i in range(num_of_ops):
 
         if(data[0][0] == 'move'):
             translate(data[1][0] + '_line', data[2][0], data[3][0])
             for j in range(1,4):
+                if(j == 1 and (((i + 1) % (num_of_ops/command_colours_num)) != 0)):
+                    continue
                 if(len(data[j]) > 1):
                     del data[j][0]
             '''if(data[3] == []):
@@ -261,8 +291,8 @@ def callback(event):
             previous_commands.append(e.get())
             listNodes.delete(0, tk.END)
             listNodes.insert(tk.END, *previous_commands)
-        except:
-            print("err ", e.get())
+        except Exception as msg:
+            print("err ", e.get(), msg)
 
         # Check Win
         x = set()
@@ -306,7 +336,9 @@ tk.Button(win2, textvariable = btn_text, command = toggle_visibility).place(relx
 def onselect(evt):
     global e
     w = evt.widget
-    cmd = w.get(w.curselection()[0])
+    tup = w.curselection()
+    if(len(tup) > 0):
+        cmd = w.get(tup[0])
     e.delete(0, "end")
     e.insert(0, cmd)
 
