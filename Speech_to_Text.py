@@ -58,7 +58,7 @@ def sample_recognize(local_file_path):
         "language_code": language_code,
         ##"sample_rate_hertz": sample_rate_hertz,
         "encoding": encoding,
-        "speech_contexts": [{
+        "speech_contexts": [{ ##Add numbers(1,two...) via class##
             "phrases":["red","green","gold","golden","yellow","blue",
                        "translate","move","shift",
                        "rotate","turn",
@@ -66,6 +66,8 @@ def sample_recognize(local_file_path):
                        "down","south","downwards","downward","southward","southwards","below",
                        "right","east","rightward","rightwards","eastwards","eastward",
                        "left","leftward","west","leftwards","westwards","westward",
+                       "all","every","extreme","top","bottom","rightmost","leftmost",
+                       "$OPERAND",
                        "move green stick by 3 units upwards.",
                        "rotate the red line.",
                        "move the red line down by 5 units.",
@@ -144,6 +146,7 @@ def sample_recognize(local_file_path):
                        "move blue up 6 steps then move blue left 10 steps",
                        "move the green stick 7 blocks rightwards and then one block upwards.",
                        "move blue to top",
+                       "quit"
                        "move yellow stick towards the right by 2 blocks",
                        "move yellow stick towards left by 3",
                        "rotate yellow",
@@ -151,7 +154,8 @@ def sample_recognize(local_file_path):
                        "rotate blue 90 degree",
                        "move blue right",
                        "move red right",
-                       "rotate 90 degree yellow"
+                       "rotate 90 degree yellow",
+                       "close"
                        ]
             }]
     }
