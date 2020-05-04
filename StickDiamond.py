@@ -1,9 +1,10 @@
+import configure
 import tkinter as tk
 from tkinter import messagebox
 import random
 import itertools
 import requests
-import sys
+import sys, os
 import string
 
 import threading
