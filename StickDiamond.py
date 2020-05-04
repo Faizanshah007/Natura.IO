@@ -12,6 +12,9 @@ import Speech_to_Text
 
 subscription_key = "" # Enter azure key # Regenerate before leaving
 
+with open('command.txt','w+') as f:
+    f.close()
+
 def get_rand_offset():
     offset = [100,-100]
     random.shuffle(offset)
