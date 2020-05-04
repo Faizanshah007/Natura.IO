@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "generated-arena-275816",
+  "private_key_id": "1b3ad024b77d5993afa7993fbcb91fa35825ec1b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDn0JlWJ9tGcHgm\noS7mwYFNhKH7yIQzuSba7CgRNRquGlEahgYTvWIMcBt7pQ2CvMTtHh09bNzXepMg\n16ye7BDGwi1KQ/l+tUZgCeHaTf/2rR2JhaQdVRW7kIPkLDkXStYIYES9HBNnaFoo\n6TUDb1KpzATVpmQOb3Fqefotk/1ML5GTCKhYIhYY8CVaEamGxsRKOnhNBvxrVpIy\nWrvurD33VlpxU1CyExx30PpzH8jdvvgyzTis3Cq56rGxmnqjqwortRvVjcTqk2XF\nc/czm180B8R/vSFcIP8+2Zt2oQHcix2/VOYSgz4RRazCFQdQKAJmKBCHwIZXPwiG\nYZQgm7jnAgMBAAECggEAAQSX+zXM4XyEzfqfEwgwpGG3E4YKY7gKotouxNwA6Orz\n88rLA+VRgGd7DSEEWIdEZK5zh2tPCBihVzHLQjBAwlIbQGDgwBhVQke0QfoUtSn0\nKQldjg39qoL5BLkgtHr6uA6N4QFIV6xnkGDa7WIl+dmeJKybBN/HsRM4MKoMDqEU\na6L8CrH02p2t7ZFA03IbpccSVbhI3kokwQHz6eSSz1SXEkSw950X8Vrd1ja3oqgW\n1IvHYVYI3t/gdOoa5ChLQ1gOWm92if6vKqJFoO+JGbB0gp3+ViZFGEgcsTI4wxsv\nnZJrwgqMj8YH4TQ3aZJ89vs5o/ai/aLGxNFYLRQRrQKBgQD1DdUnZeXuq69fOTVg\nKZ0mq0sxfm2zsoDXjDvWj2se7TrSEl6JaaH8pDAETTRBRYCDxcEpYc0LRmeG0Pjb\nAb9GTxUGKpbYXiYYvtsj49uS5R5W+6whyfHZnJVqQfisXJETyXlYeTWXGZEWRVjC\n94rRA3jWAlDCeXfhLNeAloZgqwKBgQDyK2CmBTwcPjRH+U4Npouzc/pLwgnspqbs\n5q7yN54GqY2cESQYqOdyqg2SAJMGyRi5X3rPlo5V26/8XJrvJBNLNHhzheTWia/P\nYTH50n6C2O74B+g/TQWxT5u1ib/xtKIoSxhSKOIdoFH3LQj7hwXPLklEQ/+orucC\nGHAYHowgtQKBgQDMgafCgmp6XTM1D8Q4pWHuFIPjITSiA7U8rV5+uB/YpngxOn1E\nxjAWbFtaK6gRVNRkpBOI2oLJBw981kboVrPvFC5igAZ1OVUnz5eIgy8Kj0VbqBrF\n9Adu6RtUmwvRpEq6ragkKruLhx2q7WKfCwEBX5lnWHVXZxGhjM+oE3a/kwKBgQCb\naS8LHEzpKxpOHjXzGLCKp6E3QP0xe/mgCqK3Gu41BFa2k2GA2dQ+h9dRnUC9mAxf\n2mBsHAiYHPYhlCRx18rx9mheasziyVWkVpHF60n5GtKxJhHrnbhLg/U/WXlu2ic+\niILBJy+FJ7+ySpp7ILmfreqi/qhxTl09wQUe1WvECQKBgDqPPjH/ARaMuLpy2The\nHPs8rKYGYognojaJ0Mq7aMXLJaRL9aA/VOuhq15hLnEww2kpTrabmlNBzM+3gyid\nt/ebzvThZuPx1dbtNfQqmynCy16ftoRFAbZiTeEMOBHNLbdsRkWGp4ZKafXdIn5d\nSq0O0/L4sH0LY+UZDbt0MQ4v\n-----END PRIVATE KEY-----\n",
+  "client_email": "playergrant@generated-arena-275816.iam.gserviceaccount.com",
+  "client_id": "114345403997051435419",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/playergrant%40generated-arena-275816.iam.gserviceaccount.com"
+}
