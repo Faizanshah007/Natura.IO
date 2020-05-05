@@ -238,7 +238,7 @@ def operate_game_by_command(x):
         if(data[0][0] == 'move'):
             translate(data[1][0] + '_line', data[2][0], data[3][0])
             for j in range(1,4):
-                if(j == 1 and (((i + 1) % (num_of_ops/command_colours_num)) != 0)):
+                if(j == 1 and (((i + 1) % round(num_of_ops/command_colours_num)) != 0)):
                     continue
                 if(len(data[j]) > 1):
                     del data[j][0]
