@@ -30,6 +30,7 @@ import threading, time
 
 from google.cloud import speech_v1
 from google.cloud.speech_v1 import enums
+from google.oauth2.credentials import Credentials
 import io
 
 
@@ -70,6 +71,7 @@ def sample_recognize(local_file_path):
                        "right","east","rightward","rightwards","eastwards","eastward",
                        "left","leftward","west","leftwards","westwards","westward",
                        "all","every","extreme","top","bottom","rightmost","leftmost",
+                       "green left $OPERAND",
                        "move green stick by 3 units upwards.",
                        "rotate the red line.",
                        "move the red line down by 5 units.",
