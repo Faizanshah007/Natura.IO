@@ -2,7 +2,7 @@ import sys, os
 import subprocess
 
 
-required_modules = ['requests==2.23.0','protobuf==3.11.3','google-cloud-speech']
+required_modules = ['requests','protobuf','google-cloud-speech']
 if('3.7' in sys.version):
     required_modules.append('PyAudio-0.2.11-cp37-cp37m-win_amd64.whl')
 elif('3.8' in sys.version):
