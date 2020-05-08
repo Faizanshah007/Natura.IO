@@ -28,4 +28,4 @@ def install(package):
 for module in required_modules:
     install(module)
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getcwd() + r'\My First Project-2eab4206a67d.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getcwd() + r'\generated-arena-275816-1b3ad024b77d.json'
