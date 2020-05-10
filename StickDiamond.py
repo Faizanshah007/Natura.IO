@@ -132,7 +132,7 @@ def operate_game_by_command(x):
     global subscription_key
     try:
         command = str(x).replace('&','and').replace(' a ',' 1 ')
-        r = requests.get(f'https://centralindia.api.cognitive.microsoft.com/luis/v2.0/apps/67ec9d8b-fed1-4ded-a47d-c76f07d5ef93?verbose=true&timezoneOffset=330&subscription-key=' + subscription_key + '&q=' + command)
+        r = requests.get(f'https://centralindia.api.cognitive.microsoft.com/luis/v2.0/apps/67ec9d8b-fed1-4ded-a47d-c76f07d5ef93?verbose=true&timezoneOffset=0&subscription-key=' + subscription_key + '&q=' + command)
         result = r.json()
         print(result)
     except Exception as e:
@@ -141,7 +141,7 @@ def operate_game_by_command(x):
 
     intent = list()
 
-    '''temp = (requests.get(f'https://centralindia.api.cognitive.microsoft.com/luis/v2.0/apps/9add54d5-3a9a-4315-b153-daa4c53395ad?verbose=true&timezoneOffset=0&subscription-key=' + subscription_key + '&q=' + command)).json()
+    '''temp = (requests.get(f'https://centralindia.api.cognitive.microsoft.com/luis/v2.0/apps/9add54d5-3a9a-4315-b153-daa4c53395ad?verbose=true&timezoneOffset=0&subscription-key=' + subscription_key + '&q=' + command)).json() #update
     print(temp)
     flag = None
     
