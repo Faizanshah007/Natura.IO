@@ -1,9 +1,10 @@
 import sys, os
 import subprocess
+from pathlib import Path
 
 py_executable = ''
 
-for ele in os.listdir(sys.executable.replace(r'\pythonw.exe','')):
+for ele in os.listdir(Path(sys.executable).parent):
 	if('.exe' in ele and ele != 'pythonw.exe'):
 		py_executable = ele
 		break
@@ -28,4 +29,4 @@ def install(package):
 for module in required_modules:
     install(module)
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getcwd() + r'\generated-arena-275816-1b3ad024b77d.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getcwd() + r'\My First Project-2eab4206a67d.json'
